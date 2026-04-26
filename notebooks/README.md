@@ -1,3 +1,12 @@
-# Notebooks Directory
+# Notebooks
 
-Place Jupyter notebooks for data exploration, prompt experiments, or analysis in this folder.
+This folder contains Jupyter notebooks for exploration and analysis.
+
+Current notebooks include:
+
+- `dataset_exploration.ipynb`
+  - explores the interview-question dataset
+- `benchmark_analysis.ipynb`
+  - analyzes benchmark results across model versions
+
+These notebooks support the written evaluation, but the main application code lives in `src/`.
