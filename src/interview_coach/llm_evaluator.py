@@ -16,6 +16,11 @@ LLM_SCORING_VERSION = "v5_llm_rubric"
 STRUCTURED_LLM_SCORING_VERSION = "v6_llm_structured_rubric"
 DEFAULT_LLM_MODEL = "gpt-5-nano"
 DEFAULT_DUKE_BASE_URL = "https://litellm.oit.duke.edu/v1"
+PROMPT_VARIANTS = {
+    "prompt_a_simple": "Simple structured rubric prompt.",
+    "prompt_b_strict": "Stricter interviewer prompt with calibrated scoring.",
+    "prompt_c_penalty": "Structured rubric prompt with explicit penalties for vague or misleading answers.",
+}
 
 
 class LlmRubricEvaluation(BaseModel):
@@ -171,6 +176,89 @@ Candidate Answer:
 """.strip()
 
 
+def build_structured_prompt_variant(
+    question: str,
+    reference_answer: str,
+    user_answer: str,
+    prompt_variant: str,
+) -> str:
+    """Build one of the prompt-engineering variants used for comparison."""
+    if prompt_variant == "prompt_a_simple":
+        return f"""
+You are an expert software engineering interviewer.
+
+Evaluate the candidate answer using these subscores:
+- correctness_subscore: 0 to 2
+- completeness_subscore: 0 to 2
+- clarity_subscore: 0 to 2
+
+Scoring guidance:
+- 0 = poor or missing
+- 1 = partial
+- 2 = strong
+
+Return short reasons plus strengths and improvements.
+
+Interview Question:
+{question}
+
+Reference Answer:
+{reference_answer}
+
+Candidate Answer:
+{user_answer}
+""".strip()
+
+    if prompt_variant == "prompt_b_strict":
+        return build_structured_rubric_prompt(
+            question=question,
+            reference_answer=reference_answer,
+            user_answer=user_answer,
+        )
+
+    if prompt_variant == "prompt_c_penalty":
+        return f"""
+You are an expert software engineering interviewer.
+
+Evaluate the candidate answer using these three subscores only:
+- correctness_subscore: 0 to 2
+- completeness_subscore: 0 to 2
+- clarity_subscore: 0 to 2
+
+Definitions:
+- correctness_subscore:
+  0 = technically wrong, misleading, or missing
+  1 = partially correct or mixed
+  2 = technically correct
+- completeness_subscore:
+  0 = misses the central concept
+  1 = covers some expected ideas
+  2 = covers the main ideas well
+- clarity_subscore:
+  0 = vague, confusing, or just repeats the question
+  1 = understandable but rough
+  2 = clear and direct
+
+Penalty rules:
+- Do not reward answers that only restate the question.
+- Do not give high scores to answers that sound relevant but are incorrect.
+- Penalize vague answers that avoid the technical point.
+- If the candidate says they do not know, keep scores low.
+- Be conservative rather than generous.
+
+Interview Question:
+{question}
+
+Reference Answer:
+{reference_answer}
+
+Candidate Answer:
+{user_answer}
+""".strip()
+
+    raise ValueError(f"Unsupported prompt variant: {prompt_variant}")
+
+
 def compute_structured_rating(
     correctness_subscore: int,
     completeness_subscore: int,
@@ -262,6 +350,21 @@ def evaluate_answer_with_structured_llm(
     user_answer: str,
 ) -> dict[str, Any]:
     """Evaluate an answer using the stricter v6 structured rubric."""
+    return evaluate_answer_with_structured_prompt_variant(
+        question=question,
+        reference_answer=reference_answer,
+        user_answer=user_answer,
+        prompt_variant="prompt_b_strict",
+    )
+
+
+def evaluate_answer_with_structured_prompt_variant(
+    question: str,
+    reference_answer: str,
+    user_answer: str,
+    prompt_variant: str,
+) -> dict[str, Any]:
+    """Evaluate an answer with one of the structured prompt variants."""
     if not is_llm_configured():
         raise ValueError(
             "No API key found. Set OPENAI_API_KEY or DUKE_AI_API_KEY to use the v6 LLM evaluator."
@@ -281,10 +384,11 @@ def evaluate_answer_with_structured_llm(
             },
             {
                 "role": "user",
-                "content": build_structured_rubric_prompt(
+                "content": build_structured_prompt_variant(
                     question=question,
                     reference_answer=reference_answer,
                     user_answer=user_answer,
+                    prompt_variant=prompt_variant,
                 ),
             },
         ],
@@ -303,6 +407,7 @@ def evaluate_answer_with_structured_llm(
 
     return {
         "llm_model": model_name,
+        "prompt_variant": prompt_variant,
         "semantic_score": "",
         "coverage_score": "",
         "similarity_score": final_score,
