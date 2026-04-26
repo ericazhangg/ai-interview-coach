@@ -1,4 +1,7 @@
-"""Baseline interview flow utilities."""
+"""Baseline interview flow utilities.
+
+This file was created with AI help and then reviewed, edited, and tested by me.
+"""
 
 from __future__ import annotations
 

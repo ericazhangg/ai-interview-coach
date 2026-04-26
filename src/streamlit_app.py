@@ -1,4 +1,7 @@
-"""Simple Streamlit UI for the AI Interview Coach."""
+"""Simple Streamlit UI for the AI Interview Coach.
+
+This file was created with AI help and then reviewed, edited, and tested by me.
+"""
 
 from __future__ import annotations
 

@@ -4,7 +4,7 @@ This document summarizes where the interview-answer scoring models fail, which i
 
 ## Visualization
 
-![Benchmark error analysis graph](image.png)
+![Benchmark error analysis graph](error_analysis_chart.png)
 
 Figure 1 shows the benchmark comparison across model versions. The chart confirms that the LLM-based evaluators improve overall benchmark alignment relative to v3 and v4. It also shows the main tradeoff between the two LLM variants: v5 is stronger on exact-match style metrics, while v6 is stronger on overall calibration metrics such as MAE and within-plus-or-minus-one accuracy.
 

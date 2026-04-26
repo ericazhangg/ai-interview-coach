@@ -1,4 +1,7 @@
-"""Audio helpers for optional Streamlit voice features."""
+"""Audio helpers for optional Streamlit voice features.
+
+This file was created with AI help and then reviewed, edited, and tested by me.
+"""
 
 from __future__ import annotations
 

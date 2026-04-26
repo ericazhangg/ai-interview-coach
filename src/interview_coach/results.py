@@ -1,4 +1,7 @@
-"""Utilities for saving baseline evaluation results."""
+"""Utilities for saving baseline evaluation results.
+
+This file was created with AI help and then reviewed, edited, and tested by me.
+"""
 
 from __future__ import annotations
 

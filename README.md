@@ -1,43 +1,63 @@
 # AI Interview Coach
 
-This repository is organized around a `src`/`data` project structure for the AI Interview Coach final project.
+AI Interview Coach is a software engineering interview practice tool that asks technical questions, accepts typed or spoken answers, and scores responses with multiple evaluation approaches. The final deployed system uses a structured LLM rubric to give concise feedback on correctness, completeness, and clarity.
 
-## Structure
+## What it Does
 
-- `src/`
-  - application source code, Streamlit UI, CLI entrypoint, and evaluation scripts
-- `data/`
-  - raw dataset, benchmark test cases, and generated result CSV files
-- `models/`
-  - model configs or loading artifacts when needed
-- `notebooks/`
-  - Jupyter notebooks for exploration and analysis
-- `videos/`
-  - demo video and technical walkthrough video
-- `docs/`
-  - report-ready charts, tables, and supplementary documentation
-- `requirements.txt`
-  - Python dependencies
+This project helps users practice software engineering interview questions in a more realistic format. It presents a technical interview question, lets the user answer by text or speech, and then evaluates the answer using several versions of the scoring pipeline, including a final structured LLM rubric model. The system returns a rating, rubric-based feedback, and supporting explanation, and it also includes benchmark scripts and evaluation artifacts for comparing model versions and documenting improvements.
 
-## Main Entry Points
+## Quick Start
 
-- CLI: `python src/main.py`
-- Streamlit UI: `python -m streamlit run src/streamlit_app.py`
-- Benchmark runner: `python src/scripts/run_version_benchmark.py`
-- Benchmark comparison: `python src/scripts/compare_results.py`
+1. Create and activate a virtual environment:
 
-## Important Paths
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-- Dataset: `data/raw/Software_Questions.csv`
-- Benchmark cases: `data/evaluation/test_cases.csv`
-- Generated results: `data/results/`
-- Report assets: `docs/`
+2. If you want to use the LLM scorers, create a `.env` file in the project root with either:
 
-## Evaluation Notes
+```env
+OPENAI_API_KEY=your_key_here
+```
 
-- Quantitative benchmark summary: `docs/benchmark_metrics_table.md`
-- Prompt comparison summary: `docs/prompt_comparison_table.md`
-- Error analysis and failure cases: `docs/error_analysis.md`
-- Iteration log and improvement summary: `docs/model_iterations.md`
-- Baseline comparison: `docs/baseline_comparison.md`
-- Design tradeoff notes: `docs/design_tradeoffs.md`
+or
+
+```env
+DUKE_AI_API_KEY=your_key_here
+```
+
+3. Run the web app:
+
+```bash
+python -m streamlit run src/streamlit_app.py
+```
+
+Public deployed app:
+
+```text
+https://sweinterviewcoach.streamlit.app/
+```
+
+Local CLI version:
+
+```bash
+python src/main.py
+```
+
+More detailed setup instructions are in `SETUP.md`.
+
+## Video Links
+
+- Demo video: add link here
+- Technical walkthrough: add link here
+
+## Evaluation
+
+The project benchmark compares `v3`, `v4`, `v5`, and `v6` on the same fixed test set in `data/evaluation/test_cases.csv`. The final `v6` structured LLM rubric model achieved the best overall calibration with `MAE = 0.450`, `within ±1 accuracy = 1.000`, and `Pearson correlation = 0.938`, while `v5` remained slightly stronger on exact accuracy and Spearman correlation. Additional evaluation artifacts include the benchmark summary in `docs/benchmark_metrics_table.md`, prompt comparison results in `docs/prompt_comparison_table.md`, failure analysis in `docs/error_analysis.md`, and iteration history in `docs/model_iterations.md`.
+
+## Individual Contributions
+
+This was an individual project. All design decisions, testing, debugging, benchmarking, deployment, and final submission work were completed by me.

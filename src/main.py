@@ -1,4 +1,7 @@
-"""Command-line baseline for the AI Interview Coach."""
+"""Command-line baseline for the AI Interview Coach.
+
+This file was created with AI help and then reviewed, edited, and tested by me.
+"""
 
 import os
 from pathlib import Path
