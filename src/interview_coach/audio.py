@@ -9,7 +9,7 @@ from typing import BinaryIO
 
 from openai import OpenAI
 
-from interview_coach.llm_evaluator import get_api_key, get_base_url
+from interview_coach.llm_evaluator import get_api_key, get_base_url, get_config_value
 
 
 DEFAULT_TTS_MODEL = "gpt-4o-mini-tts"
@@ -41,17 +41,17 @@ def get_audio_client() -> OpenAI:
 
 def get_tts_model_name() -> str:
     """Return the configured text-to-speech model name."""
-    return os.getenv("OPENAI_TTS_MODEL", DEFAULT_TTS_MODEL)
+    return get_config_value("OPENAI_TTS_MODEL", DEFAULT_TTS_MODEL)
 
 
 def get_tts_voice_name() -> str:
     """Return the configured TTS voice name."""
-    return os.getenv("OPENAI_TTS_VOICE", DEFAULT_TTS_VOICE)
+    return get_config_value("OPENAI_TTS_VOICE", DEFAULT_TTS_VOICE)
 
 
 def get_transcription_model_name() -> str:
     """Return the configured speech-to-text model name."""
-    return os.getenv("OPENAI_TRANSCRIPTION_MODEL", DEFAULT_TRANSCRIPTION_MODEL)
+    return get_config_value("OPENAI_TRANSCRIPTION_MODEL", DEFAULT_TRANSCRIPTION_MODEL)
 
 
 def synthesize_speech(text: str) -> bytes:

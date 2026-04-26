@@ -48,6 +48,23 @@ def format_list_for_csv(items: list[str]) -> str:
     return " | ".join(cleaned_items)
 
 
+def get_config_value(name: str, default: str = "") -> str:
+    """Read configuration from env vars first, then Streamlit secrets if available."""
+    env_value = os.getenv(name)
+    if env_value:
+        return env_value
+
+    try:
+        import streamlit as st
+
+        if name in st.secrets:
+            return str(st.secrets[name])
+    except Exception:
+        pass
+
+    return default
+
+
 def is_llm_configured() -> bool:
     """Return True when the OpenAI API key is available."""
     return bool(get_api_key())
@@ -55,15 +72,16 @@ def is_llm_configured() -> bool:
 
 def get_api_key() -> str:
     """Return the configured API key from supported environment variables."""
-    return os.getenv("OPENAI_API_KEY", "") or os.getenv("DUKE_AI_API_KEY", "")
+    return get_config_value("OPENAI_API_KEY") or get_config_value("DUKE_AI_API_KEY")
 
 
 def get_base_url() -> str | None:
     """Return the configured base URL when using a proxy or gateway."""
-    if os.getenv("OPENAI_BASE_URL"):
-        return os.getenv("OPENAI_BASE_URL")
+    openai_base_url = get_config_value("OPENAI_BASE_URL")
+    if openai_base_url:
+        return openai_base_url
 
-    if os.getenv("DUKE_AI_API_KEY"):
+    if get_config_value("DUKE_AI_API_KEY"):
         return DEFAULT_DUKE_BASE_URL
 
     return None
@@ -71,7 +89,7 @@ def get_base_url() -> str | None:
 
 def get_llm_model_name() -> str:
     """Return the configured model name for rubric evaluation."""
-    return os.getenv("OPENAI_MODEL", DEFAULT_LLM_MODEL)
+    return get_config_value("OPENAI_MODEL", DEFAULT_LLM_MODEL)
 
 
 def build_rubric_prompt(
