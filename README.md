@@ -32,3 +32,12 @@ This repository is organized around a `src`/`data` project structure for the AI 
 - Benchmark cases: `data/evaluation/test_cases.csv`
 - Generated results: `data/results/`
 - Report assets: `docs/`
+
+## Evaluation Notes
+
+- Quantitative benchmark summary: `docs/benchmark_metrics_table.md`
+- Prompt comparison summary: `docs/prompt_comparison_table.md`
+- Error analysis and failure cases: `docs/error_analysis.md`
+- Iteration log and improvement summary: `docs/model_iterations.md`
+- Baseline comparison: `docs/baseline_comparison.md`
+- Design tradeoff notes: `docs/design_tradeoffs.md`

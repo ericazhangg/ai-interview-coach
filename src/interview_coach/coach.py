@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+
+if TYPE_CHECKING:
+    from sentence_transformers import SentenceTransformer
 
 
 DEFAULT_MODEL_NAME = "all-MiniLM-L6-v2"
+KEYWORD_BASELINE_SCORING_VERSION = "baseline_keyword_only"
 FLEXIBLE_HYBRID_SCORING_VERSION = "v3_hybrid_semantic_flexible_keyword"
 HYBRID_SCORING_VERSION = "v4_hybrid_keyword_guardrails"
 SEMANTIC_WEIGHT = 0.6
@@ -57,8 +60,10 @@ STOPWORDS = {
 }
 
 
-def load_embedding_model(model_name: str = DEFAULT_MODEL_NAME) -> SentenceTransformer:
+def load_embedding_model(model_name: str = DEFAULT_MODEL_NAME) -> "SentenceTransformer":
     """Load the embedding model used for answer comparison."""
+    from sentence_transformers import SentenceTransformer
+
     return SentenceTransformer(model_name)
 
 
@@ -84,7 +89,7 @@ def select_random_question(
 def compute_answer_similarity(
     user_answer: str,
     reference_answer: str,
-    model: SentenceTransformer,
+    model: "SentenceTransformer",
 ) -> float:
     """Compare the user answer to the reference answer using cosine similarity."""
     cleaned_user_answer = user_answer.strip()
@@ -270,7 +275,7 @@ def generate_feedback(
 def evaluate_answer(
     user_answer: str,
     reference_answer: str,
-    model: SentenceTransformer,
+    model: "SentenceTransformer",
 ) -> dict[str, Any]:
     """Score a user answer and attach simple baseline feedback."""
     if is_non_answer(user_answer):
@@ -302,7 +307,7 @@ def evaluate_answer(
 def evaluate_answer_v3(
     user_answer: str,
     reference_answer: str,
-    model: SentenceTransformer,
+    model: "SentenceTransformer",
 ) -> dict[str, Any]:
     """Reproduce the v3 scorer without the v4 non-answer guardrails."""
     semantic_score = compute_answer_similarity(user_answer, reference_answer, model)
@@ -315,6 +320,35 @@ def evaluate_answer_v3(
         "semantic_score": semantic_score,
         "coverage_score": coverage_score,
         "similarity_score": similarity_score,
+        "rating": rating,
+        "strengths": feedback["strengths"],
+        "improvement": feedback["improvement"],
+    }
+
+
+def evaluate_answer_keyword_baseline(
+    user_answer: str,
+    reference_answer: str,
+) -> dict[str, Any]:
+    """Score an answer with a simple keyword-only baseline for comparison."""
+    if is_non_answer(user_answer):
+        return {
+            "semantic_score": 0.0,
+            "coverage_score": 0.0,
+            "similarity_score": 0.0,
+            "rating": 1,
+            "strengths": "This baseline detected that the response did not contain a usable answer.",
+            "improvement": "Provide at least one key concept or definition related to the question.",
+        }
+
+    coverage_score = compute_keyword_coverage(user_answer, reference_answer)
+    rating = similarity_to_rating(coverage_score)
+    feedback = generate_feedback(coverage_score, 0.0, coverage_score)
+
+    return {
+        "semantic_score": 0.0,
+        "coverage_score": coverage_score,
+        "similarity_score": coverage_score,
         "rating": rating,
         "strengths": feedback["strengths"],
         "improvement": feedback["improvement"],
