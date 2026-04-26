@@ -51,8 +51,8 @@ More detailed setup instructions are in `SETUP.md`.
 
 ## Video Links
 
-- Demo video: add link here
-- Technical walkthrough: add link here
+- Demo video: [link](https://drive.google.com/file/d/1a924iX1oK5plHfwvjjR57iP2ZbZozQOz/view?usp=sharing)
+- Technical walkthrough: [link](https://drive.google.com/file/d/1bMcg9tiBfnU2DPhYZ3JC6xJx_qW974n4/view?usp=sharing)
 
 ## Evaluation
 
