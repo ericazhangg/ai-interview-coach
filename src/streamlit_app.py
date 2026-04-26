@@ -36,8 +36,9 @@ from interview_coach.results import (
 )
 
 
-CSV_PATH = Path("Software Questions.csv")
-INTERVIEWER_IMAGE_PATH = Path("assets/interviewer_portrait.jpg")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+CSV_PATH = PROJECT_ROOT / "data" / "raw" / "Software_Questions.csv"
+INTERVIEWER_IMAGE_PATH = PROJECT_ROOT / "src" / "assets" / "interviewer_portrait.jpg"
 SCORER_OPTIONS = {
     "v4 Hybrid Baseline": ("hybrid", HYBRID_SCORING_VERSION),
     "v5 LLM Rubric": ("llm", LLM_SCORING_VERSION),
@@ -533,6 +534,19 @@ def render_result(
             "Clarity", f"{evaluation.get('clarity_subscore', '')}/2"
         )
 
+    if audio_enabled:
+        feedback_text = (
+            f"Rating: {evaluation['rating']} out of 5. "
+            f"Strengths: {evaluation['strengths']}. "
+            f"Areas for improvement: {evaluation['improvement']}."
+        )
+        render_browser_speech(
+            feedback_text,
+            button_label="Read Feedback Aloud",
+            element_id="feedback-speech-button",
+            caption="Feedback audio uses browser speech with your current key setup.",
+        )
+
     strengths = split_feedback_points(evaluation["strengths"])
     improvements = split_feedback_points(evaluation["improvement"])
     feedback_columns = st.columns(2, gap="large")
@@ -552,19 +566,6 @@ def render_result(
                 st.markdown(f"- {point}")
         else:
             st.write("No improvement areas were returned for this response.")
-
-    if audio_enabled:
-        feedback_text = (
-            f"Rating: {evaluation['rating']} out of 5. "
-            f"Strengths: {evaluation['strengths']}. "
-            f"Areas for improvement: {evaluation['improvement']}."
-        )
-        render_browser_speech(
-            feedback_text,
-            button_label="Read Feedback Aloud",
-            element_id="feedback-speech-button",
-            caption="Feedback audio uses browser speech with your current key setup.",
-        )
 
     detail_tabs = st.tabs(["Breakdown", "Reference Answer"])
     with detail_tabs[0]:

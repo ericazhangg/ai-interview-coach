@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import Any
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = PROJECT_ROOT / "data" / "results"
+
 RESULT_COLUMNS = [
     "session_id",
     "scoring_version",
@@ -44,12 +47,12 @@ def create_session_id() -> str:
 def get_versioned_results_path(scoring_version: str) -> Path:
     """Return a per-version results path so experiments stay separated."""
     safe_version = scoring_version.replace("/", "_").replace(" ", "_")
-    return Path("results") / f"session_results_{safe_version}.csv"
+    return RESULTS_DIR / f"session_results_{safe_version}.csv"
 
 
 def save_session_results(
     results: list[dict[str, Any]],
-    output_path: str | Path = "results/session_results.csv",
+    output_path: str | Path = RESULTS_DIR / "session_results.csv",
 ) -> Path:
     """Append session results to a CSV file for later evaluation."""
     output_file = Path(output_path)
@@ -101,7 +104,7 @@ def migrate_results_file(
 
 
 def normalize_results_csv(
-    input_path: str | Path = "results/session_results.csv",
+    input_path: str | Path = RESULTS_DIR / "session_results.csv",
 ) -> Path | None:
     """Rewrite a mixed legacy results file into one consistent schema."""
     input_file = Path(input_path)

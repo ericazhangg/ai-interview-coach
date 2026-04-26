@@ -25,6 +25,10 @@ from interview_coach.results import (
 )
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "Software_Questions.csv"
+
+
 def ask_to_continue() -> bool:
     """Return True when the user wants another question."""
     user_choice = input("Try another question? (y/n): ").strip().lower()
@@ -38,7 +42,6 @@ def get_evaluator_mode() -> str:
 
 def main() -> None:
     """Run the baseline interview coach for one or more questions."""
-    csv_path = Path("Software Questions.csv")
     evaluator_mode = get_evaluator_mode()
     if evaluator_mode == "llm":
         scoring_version = LLM_SCORING_VERSION
@@ -55,7 +58,7 @@ def main() -> None:
     else:
         scoring_version = HYBRID_SCORING_VERSION
 
-    dataset = load_and_clean_dataset(csv_path)
+    dataset = load_and_clean_dataset(DATASET_PATH)
     model = load_embedding_model() if evaluator_mode == "hybrid" else None
     used_question_numbers: set[int | float] = set()
     session_id = create_session_id()

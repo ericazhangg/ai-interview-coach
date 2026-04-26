@@ -8,12 +8,13 @@ from pathlib import Path
 from statistics import mean
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RESULTS_DIR = PROJECT_ROOT / "results"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = PROJECT_ROOT / "data" / "results"
+DOCS_DIR = PROJECT_ROOT / "docs"
 BENCHMARK_PATH = RESULTS_DIR / "version_benchmark_results.csv"
-METRICS_TABLE_PATH = RESULTS_DIR / "benchmark_metrics_table.md"
-METRICS_CSV_PATH = RESULTS_DIR / "benchmark_metrics_summary.csv"
-METRICS_SVG_PATH = RESULTS_DIR / "benchmark_metrics_chart.svg"
+METRICS_TABLE_PATH = DOCS_DIR / "benchmark_metrics_table.md"
+METRICS_CSV_PATH = DOCS_DIR / "benchmark_metrics_summary.csv"
+METRICS_SVG_PATH = DOCS_DIR / "benchmark_metrics_chart.svg"
 
 VERSION_ORDER = [
     "v3_hybrid_semantic_flexible_keyword",

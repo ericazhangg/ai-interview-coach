@@ -7,8 +7,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
 
 from interview_coach.coach import (  # noqa: E402
     FLEXIBLE_HYBRID_SCORING_VERSION,
@@ -26,9 +27,9 @@ from interview_coach.llm_evaluator import (  # noqa: E402
     is_llm_configured,
 )
 
-DATASET_PATH = PROJECT_ROOT / "Software Questions.csv"
-TEST_CASES_PATH = PROJECT_ROOT / "evaluation" / "test_cases.csv"
-OUTPUT_PATH = PROJECT_ROOT / "results" / "version_benchmark_results.csv"
+DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "Software_Questions.csv"
+TEST_CASES_PATH = PROJECT_ROOT / "data" / "evaluation" / "test_cases.csv"
+OUTPUT_PATH = PROJECT_ROOT / "data" / "results" / "version_benchmark_results.csv"
 
 
 def load_test_cases(test_cases_path: Path) -> list[dict[str, str]]:

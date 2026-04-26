@@ -1,0 +1,30 @@
+{
+  "project_model_registry": {
+    "embedding_model": {
+      "name": "sentence-transformers/all-MiniLM-L6-v2",
+      "used_for": "hybrid semantic scoring in v3 and v4",
+      "provider": "sentence-transformers"
+    },
+    "llm_evaluator_v5": {
+      "default_model": "gpt-5-nano",
+      "used_for": "rubric-based overall scoring with qualitative feedback",
+      "provider": "OpenAI-compatible API"
+    },
+    "llm_evaluator_v6": {
+      "default_model": "gpt-5-nano",
+      "used_for": "structured rubric scoring with correctness, completeness, and clarity subscores",
+      "provider": "OpenAI-compatible API"
+    },
+    "speech_to_text": {
+      "default_model": "gpt-4o-transcribe",
+      "fallback_model": "whisper-1",
+      "used_for": "spoken answer transcription in the Streamlit app",
+      "provider": "OpenAI-compatible API"
+    },
+    "text_to_speech": {
+      "requested_model": "gpt-4o-mini-tts",
+      "status": "not available for current team key",
+      "fallback": "browser speech synthesis in Streamlit"
+    }
+  }
+}

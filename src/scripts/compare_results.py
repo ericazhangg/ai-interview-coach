@@ -8,8 +8,8 @@ from pathlib import Path
 from statistics import mean
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RESULTS_DIR = PROJECT_ROOT / "results"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = PROJECT_ROOT / "data" / "results"
 BENCHMARK_PATH = RESULTS_DIR / "version_benchmark_results.csv"
 HISTORICAL_RESULT_FILES = {
     "v3": RESULTS_DIR / "session_results_v3.csv",
